@@ -1,0 +1,64 @@
+#include <math.h>
+#include <LiquidCrystal.h>
+#define relay1 7
+#define relay2 8
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+int val;
+int tempPin = 1;
+//ldr
+const int ledPin = 13; 
+const int ldrPin = A0;  
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);  
+  pinMode(ldrPin, INPUT);  
+  lcd.begin(16, 2);
+  pinMode(relay2, OUTPUT);  
+  digitalWrite(relay2, HIGH);
+}
+
+void loop() {
+  //temp
+ val = analogRead(tempPin);
+float mv =( ( val/1024.0)*5000); 
+float cel = (mv/10);
+float farh =((cel*9)/5 + 32)-200;
+  
+
+Serial.print("TEMPRATURE = ");
+Serial.print(cel);
+Serial.print("C");
+lcd.print("Temprature is ");
+lcd.print(cel);
+Serial.println();
+
+if(cel>=30)
+        digitalWrite(relay2, LOW);
+  else
+      digitalWrite(relay2,HIGH);   
+  delay(850);
+  lcd.clear();
+/*Serial.print("TEMPRATURE = ");
+Serial.print(farh);
+Serial.print("F");
+Serial.println();
+delay(1000);
+*/
+  
+  //ldr
+  int ldrStatus = analogRead(ldrPin);  
+  
+   if (ldrStatus <=300) {
+
+    digitalWrite(ledPin, HIGH);             
+    Serial.println("LDR is DARK, LED is ON");
+    
+   }
+  else {
+ //turn LED off
+    Serial.println("LED OFF");
+  }
+
+}
